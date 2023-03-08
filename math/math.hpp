@@ -1,7 +1,7 @@
 #ifndef SAUROS_PKG_MATH
 #define SAUROS_PKG_MATH
 
-#include <sauros/sauros.hpp>
+#include <libsauros/sauros.hpp>
 
 #ifdef WIN32
 #define API_EXPORT __declspec(dllexport)

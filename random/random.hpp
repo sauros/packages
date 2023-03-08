@@ -1,7 +1,7 @@
 #ifndef SAUROS_PKG_RANDOM
 #define SAUROS_PKG_RANDOM
 
-#include <sauros/sauros.hpp>
+#include <libsauros/sauros.hpp>
 
 #ifdef WIN32
 #define API_EXPORT __declspec(dllexport)

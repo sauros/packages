@@ -3,7 +3,7 @@
 #include <chrono>
 #include <ctime>
 #include <iostream>
-#include <sauros/capi/capi.hpp>
+#include <libsauros/capi/capi.hpp>
 
 inline uint64_t get_stamp() {
   return std::chrono::duration_cast<std::chrono::milliseconds>(

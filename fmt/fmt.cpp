@@ -1,5 +1,5 @@
 #include "fmt.hpp"
-#include <sauros/capi/capi.hpp>
+#include <libsauros/capi/capi.hpp>
 #include <string>
 
 namespace {

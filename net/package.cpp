@@ -1,5 +1,5 @@
 #include "package.hpp"
-#include <sauros/capi/capi.hpp>
+#include <libsauros/capi/capi.hpp>
 #include <string>
 
 #include <arpa/inet.h>

@@ -2,7 +2,7 @@
 #include <cstdint>
 #include <filesystem>
 #include <fstream>
-#include <sauros/capi/capi.hpp>
+#include <libsauros/capi/capi.hpp>
 #include <string>
 
 using namespace sauros;

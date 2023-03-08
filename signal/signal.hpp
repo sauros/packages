@@ -1,7 +1,7 @@
 #ifndef SAUROS_PKG_SIGNAL
 #define SAUROS_PKG_SIGNAL
 
-#include <sauros/sauros.hpp>
+#include <libsauros/sauros.hpp>
 
 #ifdef WIN32
 #define API_EXPORT __declspec(dllexport)

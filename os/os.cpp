@@ -6,7 +6,7 @@
 #include <fstream>
 #include <functional>
 #include <iostream>
-#include <sauros/capi/capi.hpp>
+#include <libsauros/capi/capi.hpp>
 #include <string>
 #include <thread>
 

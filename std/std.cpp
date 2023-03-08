@@ -1,6 +1,6 @@
 #include "std.hpp"
 
-#include <sauros/capi/capi.hpp>
+#include <libsauros/capi/capi.hpp>
 #include <string>
 
 sauros::cell_ptr

@@ -1,7 +1,7 @@
 #include "math.hpp"
 
 #include <iostream>
-#include <sauros/capi/capi.hpp>
+#include <libsauros/capi/capi.hpp>
 #include <string>
 
 sauros::cell_ptr single_arithmetic(sauros::cells_t &cells,

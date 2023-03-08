@@ -1,7 +1,7 @@
 #include "random.hpp"
 
 #include <random>
-#include <sauros/capi/capi.hpp>
+#include <libsauros/capi/capi.hpp>
 #include <string>
 
 static constexpr char ALL_CHARS[] = "0123456789"

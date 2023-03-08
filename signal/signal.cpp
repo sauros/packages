@@ -2,7 +2,7 @@
 #include <csignal>
 #include <cstdint>
 #include <iostream>
-#include <sauros/capi/capi.hpp>
+#include <libsauros/capi/capi.hpp>
 #include <unordered_map>
 
 struct cell_env_pair_s {
