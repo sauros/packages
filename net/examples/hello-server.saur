@@ -1,0 +1,69 @@
+[use "fmt"]
+[try 
+    [use "net"] 
+[block
+    [putln [fmt.encode "\nError output: %\n" $]]
+    [putln "Unable to `use` the package - Has the lib been compiled?"]
+    [exit 1]
+]]
+
+;   Make a port
+;
+[var port [net.htons 4096]]
+
+;   Create the socket
+;
+[var socket_fd
+    [net.socket net.AF_INET net.SOCK_STREAM net.PROTO_STD ]
+]
+
+[if [< socket_fd 0] [block
+    [putln [fmt.encode 
+        "Failed to create socket with errno %" [net.errno]] 
+        " >> Socket: " socket_fd
+    ]
+    [exit 1]
+]]
+
+;   Set socket options
+;
+[var socket_options [bw_or net.SO_REUSEADDR net.SO_REUSEPORT]]
+
+[if [net.setsockopt socket_fd net.SOL_SOCKET socket_options] [block
+    [putln [fmt.encode 
+        "Failed to create set socket options with errno %" [net.errno]]
+    ]
+    [exit 1]
+]]
+
+[var bind_result [net.bind socket_fd net.AF_INET port net.INADDR_ANY]]
+[if [< bind_result 0] [block
+    [putln "Failed to bind socket: " bind_result " errno>> " [net.errno]]
+    [exit 1]
+]]
+
+[var listen_result [net.listen socket_fd 5]]
+[if [< listen_result 0] [block
+    [putln "Failed to listen on socket: " listen_result " errno>> " [net.errno]]
+    [exit 1]
+]]
+
+[var new_socket_fd [net.accept socket_fd]]
+[if [< new_socket_fd 0] [block
+    [putln "Failed to accept on socket: " new_socket_fd " errno>> " [net.errno]]
+    [exit 1]
+]]
+
+[var data_in [net.read new_socket_fd 1024]]
+
+[putln "Data read in: " data_in]
+
+[var sent_len [net.send new_socket_fd "Hello from server" 0]]
+[if [< sent_len 0] [block
+    [putln "Failed to send on socket: " sent_len " errno>> " [net.errno]]
+    [exit 1]
+]]
+
+[net.close socket_fd]
+
+[net.shutdown socket_fd net.SHUT_RDWR]

@@ -1,0 +1,190 @@
+;   Author: bosley
+;   About:  Networking wrapper for sauros
+;
+;   Additional texts:
+;
+;   https://man7.org/linux/man-pages/man2/socket.2.html
+;   https://man7.org/linux/man-pages/man3/errno.3.html
+;   https://linux.die.net/man/3/htons
+;   https://linux.die.net/man/2/setsockopt
+;   https://linux.die.net/man/3/bind
+;   https://linux.die.net/man/3/connect
+;   https://linux.die.net/man/3/listen
+;
+
+[var AF_UNIX       1]
+[var AF_INET       2]
+
+[var SOCK_STREAM   1]
+[var SOCK_DGRAM    2]
+
+[var PROTO_STD     0]
+
+[var SO_DEBUG      1]
+[var SO_BROADCAST  6]
+[var SO_REUSEADDR  2]
+[var SO_KEEPALIVE  9]
+[var SO_LINGER    13]
+[var SO_REUSEPORT 15]
+[var SO_OOBINLINE 10]
+[var SO_SNDBUF     7]
+[var SO_RCVBUF     8]
+[var SO_DONTROUTE  5]
+[var SO_RCVLOWAT  18]
+[var SO_RCVTIMEO  20]
+[var SO_SNDLOWAT  19]
+[var SO_SNDTIMEO  21]
+
+[var SOL_SOCKET    1]
+
+[var INADDR_ANY    0]
+
+[var SHUT_RD       0]
+[var SHUT_WR       1]
+[var SHUT_RDWR     2]
+
+; \brief Retrieve errno
+[var errno [lambda [] [yield [net._pkg_net_errno_]]]]
+
+; \brief converts the Internet host address cp from IPv4 numbers-and-dots 
+;           notation into binary data in network byte order. 
+;           If the input is invalid, INADDR_NONE (usually -1) is returned. 
+;           Use of this function is problematic because -1 is a valid address (255.255.255.255). 
+;
+[var inet_addr [lambda [target] [block
+    [assert "htons `target` must be of type string" [seq "string" [type target]]]
+    [yield [net._pkg_net_inet_addr_ target]]
+]]]
+
+; \brief converts the unsigned short integer hostshort 
+;        from host byte order to network byte order
+;
+[var htons [lambda [target] [block
+    [assert "htons `target` must be of type int" [seq "integer" [type target]]]
+    [assert "htons `target` must be within range of an unsigned 16-bit integer" [<= target 65535]]
+    [yield [net._pkg_net_htons_ target]]
+]]]
+
+; \brief Create a socket file descriptor
+; \param domain specifies a communication domain
+; \param type specifies the communication semantics
+; \param protocol specifies a particular protocol to be used with the socket
+; \returns returns a file descriptor that refers to that endpoint
+;           if return value <0 check errno for error
+;
+[var socket [lambda [domain_ type_ protocol_] [block
+    [assert "socket `domain` must be of type int" [seq "integer" [type domain_]]]
+    [assert "socket `type` must be of type int" [seq "integer" [type type_]]]
+    [assert "socket `protocol` must be of type int" [seq "integer" [type protocol_]]]
+    [yield [net._pkg_net_socket_ domain_ type_ protocol_]]
+]]]
+
+; \brief Close a given socket file descriptor
+; \param socket_ the socket to close
+; \returns the result of the underlying close() operation
+;
+[var close [lambda [socket_] [block
+    [assert "close `socket_` must be of type int" [seq "integer" [type socket_]]]
+    [yield [net._pkg_net_close_ socket_]]
+]]]
+
+; \brief Set the sockets options
+; \param socket the socket file descriptor
+; \param level the level to set the option
+; \param level_name integer value representing the name
+;        of the socket option
+;
+[var setsockopt [lambda [socket_ level_ level_name_] [block
+    [assert "setsockopt `socket_` must be of type int" [seq "integer" [type socket_]]]
+    [assert "setsockopt `level_` must be of type int" [seq "integer" [type level_]]]
+    [assert "setsockopt `level_name_` must be of type int" [seq "integer" [type level_name_]]]
+    [yield [net._pkg_net_sockopt_ socket_ level_ level_name_]]
+]]]
+
+; \brief Bind socket fd to an address
+; \param socket the socket to bind
+; \param family the family protocol to bind to
+; \param port the encoded port to bind with
+; \param address the encoded address to bind with
+;
+[var bind [lambda [socket_ family_ port_ addr_] [block
+    [assert "bind `socket_` must be of type int" [seq "integer" [type socket_]]]
+    [assert "bind `family_` must be of type int" [seq "integer" [type family_]]]
+    [assert "bind `port_` must be of type int" [seq "integer" [type port]]]
+    [assert "bind `addr_` must be of type int" [seq "integer" [type addr_]]]
+    [yield [net._pkg_net_bind_ socket_ family_ port_ addr_]]
+]]]
+
+; \brief Connect socket fd to an address
+; \param socket the socket to use for connection
+; \param family the family protocol to use for connection
+; \param port the encoded port to use for connection
+; \param address the encoded address to use for connection
+;
+[var connect [lambda [socket_ family_ port_ addr_] [block
+    [assert "connect `socket_` must be of type int" [seq "integer" [type socket_]]]
+    [assert "connect `family_` must be of type int" [seq "integer" [type family_]]]
+    [assert "connect `port_` must be of type int" [seq "integer" [type port]]]
+    [assert "connect `addr_` must be of type int" [seq "integer" [type addr_]]]
+    [yield [net._pkg_net_connect_ socket_ family_ port_ addr_]]
+]]]
+
+; \brief Listen for connections
+; \param socket the socket fd to listen on
+; \param n number of connections to queue before 
+;        indicating unreachable
+;
+[var listen [lambda [socket_ n_] [block 
+    [assert "listen `socket_` must be of type int" [seq "integer" [type socket_]]]
+    [assert "listen `n_` must be of type int" [seq "integer" [type n_]]]
+    [yield [net._pkg_net_listen_ socket_ n_]]
+]]]
+
+; \brief Blocking function that waits to accept a
+;        connection on a given socket fd
+; \returns socket file descriptor of new connection
+;
+[var accept [lambda [socket_] [block 
+    [assert "accept `socket_` must be of type int" [seq "integer" [type socket_]]]
+    [yield [net._pkg_net_accept_ socket_]]
+]]]
+
+; \brief Read data from a socket that has accepted
+;        a connection
+; \param socket the socket to read data on
+; \param buffer_len the size of the buffer to read into
+;
+[var read [lambda [socket_ buffer_len_] [block
+    [assert "read `socket_` must be of type int" [seq "integer" [type socket_]]]
+    [assert "read `buffer_len_` must be of type int" [seq "integer" [type socket_]]]
+    [yield [net._pkg_net_read_ socket_ buffer_len_]]
+]]]
+
+; \brief Send some data to connection on a socket
+; \param socket the fd to send data on
+; \param data the string data to send
+; \param flats flags to add to send
+; \returns length of data sent
+;
+[var send [lambda [socket_ data_ flags_] [block
+    [assert "send `socket_` must be of type int" [seq "integer" [type socket_]]]
+    [assert "send `data_` must be of type string" [seq "string" [type data_]]]
+    [assert "send `flags_` must be of type int" [seq "integer" [type flags_]]]
+
+    [yield [net._pkg_net_send_ socket_ data_ flags_]]
+]]]
+
+; \brief Shut down all or part of the connection open on socket FD
+; \param socket the socket to shutdown
+; \param how the way to shutdown
+;     SHUT_RD   = No more receptions;
+;     SHUT_WR   = No more transmissions;
+;     SHUT_RDWR = No more receptions or transmissions.
+; \returns 0 on success, -1 for errors.
+;
+[var shutdown [lambda [socket_ how_] [block
+    [assert "shutdown `socket_` must be of type int" [seq "integer" [type socket_]]]
+    [assert "shutdown `how_` must be of type string" [seq "integer" [type how_]]]
+
+    [yield [net._pkg_net_shutdown_ socket_ how_]]
+]]]

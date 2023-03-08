@@ -1,0 +1,30 @@
+[var pkg_name "net"]
+
+[var authors "bosley"]
+[var license "MIT"]
+[var version "0.0.0"]
+
+; C++ shared lib to link to
+[var library_file "net.lib"]
+[var library_functions [list
+   "_pkg_net_errno_"
+   "_pkg_net_htons_"
+   "_pkg_net_inet_addr_"
+   "_pkg_net_socket_"
+   "_pkg_net_close_"
+   "_pkg_net_sockopt_"
+   "_pkg_net_bind_"
+   "_pkg_net_connect_"
+   "_pkg_net_listen_"
+   "_pkg_net_accept_"
+   "_pkg_net_read_"
+   "_pkg_net_send_"
+   "_pkg_net_shutdown_"
+]]
+
+; [var requires [list "std"]]
+
+; Files to include under the current pkg
+[var source_files [list
+   "net.saur"
+]]

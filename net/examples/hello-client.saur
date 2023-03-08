@@ -1,0 +1,44 @@
+[use "fmt"]
+[try 
+    [use "net"] 
+[block
+    [putln [fmt.encode "\nError output: %\n" $]]
+    [putln "Unable to `use` the package - Has the lib been compiled?"]
+    [exit 1]
+]]
+
+[var port [net.htons 4096]]
+
+;   Create the socket
+;
+[var socket_fd
+    [net.socket net.AF_INET net.SOCK_STREAM net.PROTO_STD ]
+]
+
+[if [< socket_fd 0] [block
+    [putln [fmt.encode 
+        "Failed to create socket with errno %" [net.errno]] 
+        " >> Socket: " socket_fd
+    ]
+    [exit 1]
+]]
+
+[var connect_result [net.connect socket_fd net.AF_INET [net.htons 4096] [net.inet_addr "127.0.0.1"]]]
+
+[if [< connect_result 0] [block
+    [putln "Failed to connect with socket: " connect_result " errno>> " [net.errno]]
+    [exit 1]
+]]
+
+[var sent_len [net.send socket_fd "Hello from client" 0]]
+[if [< sent_len 0] [block
+    [putln "Failed to send on socket: " sent_len " errno>> " [net.errno]]
+    [exit 1]
+]]
+
+[putln "Hello message sent"]
+
+[var data_in [net.read socket_fd 1024]]
+
+[putln data_in]
+[net.close socket_fd]
