@@ -139,7 +139,7 @@ extern cell_ptr _pkg_file_io_get_handle_(cells_t &cells, env_ptr env) {
                "file_io > seek Expected an integer type")
 
         try {
-          fc->stream->seekg(location->data.i);
+          fc->stream->seekg(location->get_integer());
         } catch (...) {
           return std::make_shared<sauros::cell_c>(CELL_FALSE);
         }
@@ -196,7 +196,7 @@ extern cell_ptr _pkg_file_io_get_handle_(cells_t &cells, env_ptr env) {
         EXPECT((n->type == cell_type_e::INTEGER),
                "file_io > get_n Expected an integer type")
 
-        auto n_actual = n->data.i;
+        auto n_actual = n->get_integer();
 
         char *buffer = new char[n_actual]();
 

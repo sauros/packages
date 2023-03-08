@@ -24,10 +24,10 @@ uint64_t diff(sauros::cells_t &cells,
         "diff command requires end time to be an integer", cells[2]);
   }
 
-  if (raw_start->data.i >= raw_end->data.i) {
+  if (raw_start->get_integer() >= raw_end->get_integer()) {
     return 0;
   }
-  return raw_end->data.i - raw_start->data.i;
+  return raw_end->get_integer() - raw_start->get_integer();
 }
 
 sauros::cell_ptr _pkg_time_stamp_(sauros::cells_t &cells,
@@ -52,7 +52,7 @@ _pkg_time_stamp_to_utc_(sauros::cells_t &cells,
     throw sauros::exceptions::runtime_c(
         "time must be an integer for stamp_to_utc", cells[1]);
   }
-  time_t time = raw_time->data.i / 1000;
+  time_t time = raw_time->get_integer() / 1000;
   std::string ts = std::ctime(&time);
   return std::make_shared<sauros::cell_c>(sauros::cell_type_e::STRING, ts);
 }

@@ -378,9 +378,9 @@ sauros::cell_ptr _pkg_os_sleep_ms_(sauros::cells_t &cells,
         "sleep_ms operation expects name to be a numerical value", cells[1]);
   }
 
-  sauros::cell_int_t time = ms_cell->data.i;
+  sauros::cell_int_t time = ms_cell->get_integer();
   if (ms_cell->type == sauros::cell_type_e::REAL) {
-    time = ms_cell->data.d;
+    time = ms_cell->get_real();
   }
 
   std::this_thread::sleep_for(std::chrono::milliseconds(time));

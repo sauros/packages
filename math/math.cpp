@@ -24,9 +24,9 @@ sauros::cell_ptr single_arithmetic(sauros::cells_t &cells,
           cell);
     }
 
-    double item_d = item->data.d;
+    double item_d = item->get_real();
     if (item->type == sauros::cell_type_e::INTEGER) {
-      item_d = item->data.i;
+      item_d = item->get_integer();
     }
 
     return fn(item_d);
@@ -211,13 +211,13 @@ _sauros_pkg_math_pow_(sauros::cells_t &cells,
           "math operation expects parameter to be an integer or a double", rhs);
     }
 
-    double lhs_d = lhs->data.d;
-    double rhs_d = rhs->data.d;
+    double lhs_d = lhs->get_real();
+    double rhs_d = rhs->get_real();
     if (lhs->type == sauros::cell_type_e::INTEGER) {
-      lhs_d = lhs->data.i;
+      lhs_d = lhs->get_integer();
     }
     if (rhs->type == sauros::cell_type_e::INTEGER) {
-      rhs_d = rhs->data.i;
+      rhs_d = rhs->get_integer();
     }
     return pow(lhs_d, rhs_d);
   };
