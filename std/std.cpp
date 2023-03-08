@@ -16,7 +16,7 @@ _pkg_std_list_make_assigned_(sauros::cells_t &cells,
 
   sauros::cell_ptr result =
       std::make_shared<sauros::cell_c>(sauros::cell_type_e::LIST);
-  result->list.assign(size->get_integer(), value);
+  result->list.assign(size->integer, value);
   return result;
 }
 
@@ -49,18 +49,18 @@ _pkg_std_list_sort_(sauros::cells_t &cells,
               }
 
               if (force_double(lhs, rhs)) {
-                double lhs_d = lhs->get_real();
-                double rhs_d = rhs->get_real();
+                double lhs_d = lhs->real;
+                double rhs_d = rhs->real;
                 if (lhs->type == sauros::cell_type_e::INTEGER) {
-                  lhs_d = lhs->get_integer();
+                  lhs_d = lhs->integer;
                 }
                 if (rhs->type == sauros::cell_type_e::INTEGER) {
-                  rhs_d = rhs->get_integer();
+                  rhs_d = rhs->integer;
                 }
                 return lhs_d, rhs_d;
               }
 
-              return lhs->get_integer() < rhs->get_integer();
+              return lhs->integer < rhs->integer;
             });
   return data;
 }

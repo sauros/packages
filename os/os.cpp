@@ -52,7 +52,7 @@ sauros::cell_ptr execute_commands(sauros::cells_t &cells, sauros::env_ptr env,
     // Indicate the path being listed
     current_dir->list.push_back(s);
 
-    if (!cmd(s->data_as_str())) {
+    if (!cmd(s->as_string())) {
       current_dir->list.push_back(
           std::make_shared<sauros::cell_c>(sauros::CELL_FALSE));
     } else {
@@ -90,7 +90,7 @@ sauros::cell_ptr _pkg_os_ls_(sauros::cells_t &cells, sauros::env_ptr env) {
     // Indicate the path being listed
     current_dir->list.push_back(s);
 
-    if (!std::filesystem::is_directory(s->data_as_str())) {
+    if (!std::filesystem::is_directory(s->as_string())) {
       current_dir->list.push_back(
           std::make_shared<sauros::cell_c>(sauros::CELL_NIL));
       result->list.push_back(current_dir);
@@ -99,7 +99,7 @@ sauros::cell_ptr _pkg_os_ls_(sauros::cells_t &cells, sauros::env_ptr env) {
 
     // Now indicate the
     for (const auto &entry :
-         std::filesystem::directory_iterator(s->data_as_str())) {
+         std::filesystem::directory_iterator(s->as_string())) {
       current_dir->list.push_back(std::make_shared<sauros::cell_c>(
           sauros::cell_type_e::STRING, entry.path().string()));
     }
@@ -117,11 +117,11 @@ sauros::cell_ptr _pkg_os_chdir_(sauros::cells_t &cells, sauros::env_ptr env) {
         "chdir command expects parameter to be a string", cells[0]);
   }
 
-  if (!std::filesystem::is_directory(raw_dest->data_as_str())) {
+  if (!std::filesystem::is_directory(raw_dest->as_string())) {
     return std::make_shared<sauros::cell_c>(sauros::CELL_FALSE);
   }
 
-  auto dest = std::filesystem::path(raw_dest->data_as_str());
+  auto dest = std::filesystem::path(raw_dest->as_string());
   std::filesystem::current_path(dest);
 
   auto path = std::filesystem::current_path();
@@ -177,9 +177,9 @@ sauros::cell_ptr _pkg_os_is_file_(sauros::cells_t &cells, sauros::env_ptr env) {
         "is_file command expects parameter to be a string", cells[0]);
   }
 
-  if (std::filesystem::is_block_file(raw_dest->data_as_str()) ||
-      std::filesystem::is_regular_file(raw_dest->data_as_str()) ||
-      std::filesystem::is_character_file(raw_dest->data_as_str())) {
+  if (std::filesystem::is_block_file(raw_dest->as_string()) ||
+      std::filesystem::is_regular_file(raw_dest->as_string()) ||
+      std::filesystem::is_character_file(raw_dest->as_string())) {
     return std::make_shared<sauros::cell_c>(sauros::CELL_TRUE);
   }
   return std::make_shared<sauros::cell_c>(sauros::CELL_FALSE);
@@ -193,7 +193,7 @@ sauros::cell_ptr _pkg_os_is_dir_(sauros::cells_t &cells, sauros::env_ptr env) {
         "is_dir command expects parameter to be a string", cells[0]);
   }
 
-  if (std::filesystem::is_directory(raw_dest->data_as_str())) {
+  if (std::filesystem::is_directory(raw_dest->as_string())) {
     return std::make_shared<sauros::cell_c>(sauros::CELL_TRUE);
   }
   return std::make_shared<sauros::cell_c>(sauros::CELL_FALSE);
@@ -207,7 +207,7 @@ sauros::cell_ptr _pkg_os_exists_(sauros::cells_t &cells, sauros::env_ptr env) {
         "is_file command expects parameter to be a string", cells[0]);
   }
 
-  if (std::filesystem::exists(raw_dest->data_as_str())) {
+  if (std::filesystem::exists(raw_dest->as_string())) {
     return std::make_shared<sauros::cell_c>(sauros::CELL_TRUE);
   }
   return std::make_shared<sauros::cell_c>(sauros::CELL_FALSE);
@@ -244,7 +244,7 @@ sauros::cell_ptr _pkg_os_copy_(sauros::cells_t &cells, sauros::env_ptr env) {
         "copy command expects source parameter to be a string", cells[1]);
   }
 
-  if (!std::filesystem::exists(source->data_as_str())) {
+  if (!std::filesystem::exists(source->as_string())) {
     return std::make_shared<sauros::cell_c>(sauros::CELL_FALSE);
   }
   auto dest = c_api_process_cell(cells[2], env);
@@ -253,10 +253,10 @@ sauros::cell_ptr _pkg_os_copy_(sauros::cells_t &cells, sauros::env_ptr env) {
         "copy command expects destination parameter to be a string", cells[2]);
   }
 
-  std::filesystem::copy(source->data_as_str(), dest->data_as_str(),
+  std::filesystem::copy(source->as_string(), dest->as_string(),
                         std::filesystem::copy_options::overwrite_existing |
                             std::filesystem::copy_options::recursive);
-  if (std::filesystem::exists(dest->data_as_str())) {
+  if (std::filesystem::exists(dest->as_string())) {
     return std::make_shared<sauros::cell_c>(sauros::CELL_TRUE);
   }
   return std::make_shared<sauros::cell_c>(sauros::CELL_FALSE);
@@ -271,7 +271,7 @@ sauros::cell_ptr _pkg_os_file_append_(sauros::cells_t &cells,
   }
 
   std::ofstream out_file;
-  out_file.open(file->data_as_str(), std::ios::out | std::ios::app);
+  out_file.open(file->as_string(), std::ios::out | std::ios::app);
 
   if (!out_file.is_open()) {
     return std::make_shared<sauros::cell_c>(sauros::CELL_FALSE);
@@ -280,7 +280,7 @@ sauros::cell_ptr _pkg_os_file_append_(sauros::cells_t &cells,
   sauros::cells_t lines = populate_source(cells, 2, env);
 
   for (auto &line : lines) {
-    out_file << line->data_as_str();
+    out_file << line->as_string();
   }
 
   out_file.close();
@@ -297,7 +297,7 @@ sauros::cell_ptr _pkg_os_file_write_(sauros::cells_t &cells,
   }
 
   std::ofstream out_file;
-  out_file.open(file->data_as_str(), std::ios::out | std::ios::trunc);
+  out_file.open(file->as_string(), std::ios::out | std::ios::trunc);
 
   if (!out_file.is_open()) {
     return std::make_shared<sauros::cell_c>(sauros::CELL_FALSE);
@@ -306,7 +306,7 @@ sauros::cell_ptr _pkg_os_file_write_(sauros::cells_t &cells,
   sauros::cells_t lines = populate_source(cells, 2, env);
 
   for (auto &line : lines) {
-    out_file << line->data_as_str();
+    out_file << line->as_string();
   }
 
   out_file.close();
@@ -323,7 +323,7 @@ sauros::cell_ptr _pkg_os_file_read_(sauros::cells_t &cells,
   }
 
   std::ifstream in_file;
-  in_file.open(file->data_as_str(), std::ios::in);
+  in_file.open(file->as_string(), std::ios::in);
 
   if (!in_file.is_open()) {
     return std::make_shared<sauros::cell_c>(sauros::CELL_NIL);
@@ -361,7 +361,7 @@ sauros::cell_ptr _pkg_os_get_env_(sauros::cells_t &cells, sauros::env_ptr env) {
         "get_env operation expects name to be a string", cells[1]);
   }
 
-  if (const char *env_p = std::getenv(var_string->data_as_str().c_str())) {
+  if (const char *env_p = std::getenv(var_string->as_string().c_str())) {
     return std::make_shared<sauros::cell_c>(sauros::cell_type_e::STRING, env_p);
   }
 
@@ -378,9 +378,9 @@ sauros::cell_ptr _pkg_os_sleep_ms_(sauros::cells_t &cells,
         "sleep_ms operation expects name to be a numerical value", cells[1]);
   }
 
-  sauros::cell_int_t time = ms_cell->get_integer();
+  sauros::cell_int_t time = ms_cell->integer;
   if (ms_cell->type == sauros::cell_type_e::REAL) {
-    time = ms_cell->get_real();
+    time = ms_cell->real;
   }
 
   std::this_thread::sleep_for(std::chrono::milliseconds(time));
@@ -393,14 +393,14 @@ sauros::cell_ptr _pkg_os_system_exec_(sauros::cells_t &cells,
   auto command = c_api_process_cell(cells[1], env);
   return std::make_shared<sauros::cell_c>(
       sauros::cell_type_e::INTEGER,
-      (sauros::cell_int_t)std::system(command->data_as_str().c_str()));
+      (sauros::cell_int_t)std::system(command->as_string().c_str()));
 }
 
 sauros::cell_ptr _pkg_os_path_join_(sauros::cells_t &cells,
                                     sauros::env_ptr env) {
 
-  std::string lhs = c_api_process_cell(cells[1], env)->data_as_str();
-  std::string rhs = c_api_process_cell(cells[2], env)->data_as_str();
+  std::string lhs = c_api_process_cell(cells[1], env)->as_string();
+  std::string rhs = c_api_process_cell(cells[2], env)->as_string();
 
   std::filesystem::path lhs_path(lhs);
 
@@ -414,7 +414,7 @@ sauros::cell_ptr _pkg_os_path_join_(sauros::cells_t &cells,
 sauros::cell_ptr _pkg_os_path_get_file_(sauros::cells_t &cells,
                                         sauros::env_ptr env) {
 
-  std::string x = c_api_process_cell(cells[1], env)->data_as_str();
+  std::string x = c_api_process_cell(cells[1], env)->as_string();
 
   std::filesystem::path x_path(x);
 
@@ -425,7 +425,7 @@ sauros::cell_ptr _pkg_os_path_get_file_(sauros::cells_t &cells,
 
 sauros::cell_ptr _pkg_os_path_get_abs_(sauros::cells_t &cells,
                                        sauros::env_ptr env) {
-  std::string x = c_api_process_cell(cells[1], env)->data_as_str();
+  std::string x = c_api_process_cell(cells[1], env)->as_string();
 
   if (x.empty()) {
     x = "./";

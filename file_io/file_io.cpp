@@ -82,7 +82,7 @@ extern cell_ptr _pkg_file_io_get_handle_(cells_t &cells, env_ptr env) {
   box->inner_env = std::make_shared<sauros::environment_c>();
   box->list.push_back(void_cell);
 
-  fc->name = c_api_process_cell(cells[1], env)->data_as_str();
+  fc->name = c_api_process_cell(cells[1], env)->as_string();
 
   box->inner_env->set(
       "open",
@@ -139,7 +139,7 @@ extern cell_ptr _pkg_file_io_get_handle_(cells_t &cells, env_ptr env) {
                "file_io > seek Expected an integer type")
 
         try {
-          fc->stream->seekg(location->get_integer());
+          fc->stream->seekg(location->integer);
         } catch (...) {
           return std::make_shared<sauros::cell_c>(CELL_FALSE);
         }
@@ -196,7 +196,7 @@ extern cell_ptr _pkg_file_io_get_handle_(cells_t &cells, env_ptr env) {
         EXPECT((n->type == cell_type_e::INTEGER),
                "file_io > get_n Expected an integer type")
 
-        auto n_actual = n->get_integer();
+        auto n_actual = n->integer;
 
         char *buffer = new char[n_actual]();
 
@@ -245,7 +245,7 @@ extern cell_ptr _pkg_file_io_get_handle_(cells_t &cells, env_ptr env) {
           return std::make_shared<sauros::cell_c>(CELL_NIL);
         }
 
-        (*fc->stream) << line->data_as_str();
+        (*fc->stream) << line->as_string();
 
         return std::make_shared<sauros::cell_c>(CELL_TRUE);
       }));

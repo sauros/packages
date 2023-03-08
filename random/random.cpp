@@ -48,9 +48,9 @@ _pkg_random_string_(sauros::cells_t &cells,
         "random::string expects parameter `len` to be numerical", cells[1]);
   }
 
-  sauros::cell_int_t len_i = len->get_integer();
+  sauros::cell_int_t len_i = len->integer;
   if (len->type == sauros::cell_type_e::REAL) {
-    len_i = len->get_real();
+    len_i = len->real;
   }
 
   return std::make_shared<sauros::cell_c>(
@@ -75,9 +75,9 @@ _pkg_random_alpha_string_(sauros::cells_t &cells,
         cells[1]);
   }
 
-  sauros::cell_int_t len_i = len->get_integer();
+  sauros::cell_int_t len_i = len->integer;
   if (len->type == sauros::cell_type_e::REAL) {
-    len_i = len->get_real();
+    len_i = len->real;
   }
   return std::make_shared<sauros::cell_c>(
       sauros::cell_type_e::STRING, generate_random_string(ALPHA_NUM, len_i));
@@ -111,13 +111,13 @@ _pkg_random_sourced_string_(sauros::cells_t &cells,
         cells[2]);
   }
 
-  sauros::cell_int_t len_i = len->get_integer();
+  sauros::cell_int_t len_i = len->integer;
   if (len->type == sauros::cell_type_e::REAL) {
-    len_i = len->get_real();
+    len_i = len->real;
   }
   return std::make_shared<sauros::cell_c>(
       sauros::cell_type_e::STRING,
-      generate_random_string(src->data_as_str(), len_i));
+      generate_random_string(src->as_string(), len_i));
 }
 
 sauros::cell_ptr
@@ -147,14 +147,14 @@ _pkg_random_uniform_int_(sauros::cells_t &cells,
         cells[2]);
   }
 
-  sauros::cell_int_t max_i = max->get_integer();
+  sauros::cell_int_t max_i = max->integer;
   if (max->type == sauros::cell_type_e::REAL) {
-    max_i = max->get_real();
+    max_i = max->real;
   }
 
-  sauros::cell_int_t min_i = min->get_integer();
+  sauros::cell_int_t min_i = min->integer;
   if (min->type == sauros::cell_type_e::REAL) {
-    min_i = min->get_real();
+    min_i = min->real;
   }
 
   std::random_device rd;
@@ -192,14 +192,14 @@ _pkg_random_uniform_real_(sauros::cells_t &cells,
         cells[2]);
   }
 
-  sauros::cell_int_t max_i = max->get_integer();
+  sauros::cell_int_t max_i = max->integer;
   if (max->type == sauros::cell_type_e::REAL) {
-    max_i = max->get_real();
+    max_i = max->real;
   }
 
-  sauros::cell_int_t min_i = min->get_integer();
+  sauros::cell_int_t min_i = min->integer;
   if (min->type == sauros::cell_type_e::REAL) {
-    min_i = min->get_real();
+    min_i = min->real;
   }
   std::random_device rd;
   std::mt19937 mt(rd());
