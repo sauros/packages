@@ -26,7 +26,7 @@ sauros::cell_ptr _pkg_net_errno_(sauros::cells_t &cells,
 sauros::cell_ptr
 _pkg_net_inet_addr_(sauros::cells_t &cells,
                     std::shared_ptr<sauros::environment_c> env) {
-  std::string target = c_api_process_cell(cells[1], env)->data_as_str();
+  std::string target = c_api_process_cell(cells[1], env)->as_string();
   return std::make_shared<sauros::cell_c>(
       sauros::cell_type_e::INTEGER,
       (sauros::cell_int_t)inet_addr(target.c_str()));
@@ -34,16 +34,16 @@ _pkg_net_inet_addr_(sauros::cells_t &cells,
 
 sauros::cell_ptr _pkg_net_htons_(sauros::cells_t &cells,
                                  std::shared_ptr<sauros::environment_c> env) {
-  uint16_t target = c_api_process_cell(cells[1], env)->get_integer();
+  uint16_t target = c_api_process_cell(cells[1], env)->integer;
   return std::make_shared<sauros::cell_c>(sauros::cell_type_e::INTEGER,
                                           (sauros::cell_int_t)htons(target));
 }
 
 sauros::cell_ptr _pkg_net_socket_(sauros::cells_t &cells,
                                   std::shared_ptr<sauros::environment_c> env) {
-  int domain = c_api_process_cell(cells[1], env)->get_integer();
-  int type = c_api_process_cell(cells[2], env)->get_integer();
-  int protocol = c_api_process_cell(cells[3], env)->get_integer();
+  int domain = c_api_process_cell(cells[1], env)->integer;
+  int type = c_api_process_cell(cells[2], env)->integer;
+  int protocol = c_api_process_cell(cells[3], env)->integer;
   return std::make_shared<sauros::cell_c>(
       sauros::cell_type_e::INTEGER,
       (sauros::cell_int_t)socket(domain, type, protocol));
@@ -51,7 +51,7 @@ sauros::cell_ptr _pkg_net_socket_(sauros::cells_t &cells,
 
 sauros::cell_ptr _pkg_net_close_(sauros::cells_t &cells,
                                  std::shared_ptr<sauros::environment_c> env) {
-  int fd = c_api_process_cell(cells[1], env)->get_integer();
+  int fd = c_api_process_cell(cells[1], env)->integer;
 
   auto result = close(fd);
 
@@ -66,9 +66,9 @@ sauros::cell_ptr _pkg_net_close_(sauros::cells_t &cells,
 
 sauros::cell_ptr _pkg_net_sockopt_(sauros::cells_t &cells,
                                    std::shared_ptr<sauros::environment_c> env) {
-  int fd = c_api_process_cell(cells[1], env)->get_integer();
-  int level = c_api_process_cell(cells[2], env)->get_integer();
-  int opt_name = c_api_process_cell(cells[3], env)->get_integer();
+  int fd = c_api_process_cell(cells[1], env)->integer;
+  int level = c_api_process_cell(cells[2], env)->integer;
+  int opt_name = c_api_process_cell(cells[3], env)->integer;
   int opt = 1;
   return std::make_shared<sauros::cell_c>(
       sauros::cell_type_e::INTEGER,
@@ -77,7 +77,7 @@ sauros::cell_ptr _pkg_net_sockopt_(sauros::cells_t &cells,
 
 sauros::cell_ptr _pkg_net_bind_(sauros::cells_t &cells,
                                 std::shared_ptr<sauros::environment_c> env) {
-  int fd = c_api_process_cell(cells[1], env)->get_integer();
+  int fd = c_api_process_cell(cells[1], env)->integer;
 
   if (g_addrs.find(fd) == g_addrs.end() || g_addrs[fd] == nullptr) {
     g_addrs[fd] = new sockaddr_in();
@@ -85,9 +85,9 @@ sauros::cell_ptr _pkg_net_bind_(sauros::cells_t &cells,
 
   auto *address = g_addrs[fd];
 
-  address->sin_family = c_api_process_cell(cells[2], env)->get_integer();
-  address->sin_port = c_api_process_cell(cells[3], env)->get_integer();
-  address->sin_addr.s_addr = c_api_process_cell(cells[4], env)->get_integer();
+  address->sin_family = c_api_process_cell(cells[2], env)->integer;
+  address->sin_port = c_api_process_cell(cells[3], env)->integer;
+  address->sin_addr.s_addr = c_api_process_cell(cells[4], env)->integer;
 
   auto result = bind(fd, (struct sockaddr *)address, sizeof(*address));
   return std::make_shared<sauros::cell_c>(sauros::cell_type_e::INTEGER,
@@ -96,7 +96,7 @@ sauros::cell_ptr _pkg_net_bind_(sauros::cells_t &cells,
 
 sauros::cell_ptr _pkg_net_connect_(sauros::cells_t &cells,
                                    std::shared_ptr<sauros::environment_c> env) {
-  int fd = c_api_process_cell(cells[1], env)->get_integer();
+  int fd = c_api_process_cell(cells[1], env)->integer;
 
   if (g_addrs.find(fd) == g_addrs.end() || g_addrs[fd] == nullptr) {
     g_addrs[fd] = new sockaddr_in();
@@ -104,9 +104,9 @@ sauros::cell_ptr _pkg_net_connect_(sauros::cells_t &cells,
 
   auto *address = g_addrs[fd];
 
-  address->sin_family = c_api_process_cell(cells[2], env)->get_integer();
-  address->sin_port = c_api_process_cell(cells[3], env)->get_integer();
-  address->sin_addr.s_addr = c_api_process_cell(cells[4], env)->get_integer();
+  address->sin_family = c_api_process_cell(cells[2], env)->integer;
+  address->sin_port = c_api_process_cell(cells[3], env)->integer;
+  address->sin_addr.s_addr = c_api_process_cell(cells[4], env)->integer;
 
   auto result = connect(fd, (struct sockaddr *)address, sizeof(*address));
   return std::make_shared<sauros::cell_c>(sauros::cell_type_e::INTEGER,
@@ -115,8 +115,8 @@ sauros::cell_ptr _pkg_net_connect_(sauros::cells_t &cells,
 
 sauros::cell_ptr _pkg_net_listen_(sauros::cells_t &cells,
                                   std::shared_ptr<sauros::environment_c> env) {
-  int fd = c_api_process_cell(cells[1], env)->get_integer();
-  int n = c_api_process_cell(cells[2], env)->get_integer();
+  int fd = c_api_process_cell(cells[1], env)->integer;
+  int n = c_api_process_cell(cells[2], env)->integer;
 
   return std::make_shared<sauros::cell_c>(sauros::cell_type_e::INTEGER,
                                           (sauros::cell_int_t)listen(fd, n));
@@ -124,7 +124,7 @@ sauros::cell_ptr _pkg_net_listen_(sauros::cells_t &cells,
 
 sauros::cell_ptr _pkg_net_accept_(sauros::cells_t &cells,
                                   std::shared_ptr<sauros::environment_c> env) {
-  int fd = c_api_process_cell(cells[1], env)->get_integer();
+  int fd = c_api_process_cell(cells[1], env)->integer;
 
   if (g_addrs.find(fd) == g_addrs.end()) {
     return std::make_shared<sauros::cell_c>(sauros::cell_type_e::INTEGER,
@@ -144,8 +144,8 @@ sauros::cell_ptr _pkg_net_accept_(sauros::cells_t &cells,
 
 sauros::cell_ptr _pkg_net_read_(sauros::cells_t &cells,
                                 std::shared_ptr<sauros::environment_c> env) {
-  int fd = c_api_process_cell(cells[1], env)->get_integer();
-  int buffer_len = c_api_process_cell(cells[2], env)->get_integer();
+  int fd = c_api_process_cell(cells[1], env)->integer;
+  int buffer_len = c_api_process_cell(cells[2], env)->integer;
 
   char *buffer = new char[buffer_len];
   memset(buffer, 0, buffer_len);
@@ -162,9 +162,9 @@ sauros::cell_ptr _pkg_net_read_(sauros::cells_t &cells,
 
 sauros::cell_ptr _pkg_net_send_(sauros::cells_t &cells,
                                 std::shared_ptr<sauros::environment_c> env) {
-  int fd = c_api_process_cell(cells[1], env)->get_integer();
-  std::string data = c_api_process_cell(cells[2], env)->data_as_str();
-  int flags = c_api_process_cell(cells[3], env)->get_integer();
+  int fd = c_api_process_cell(cells[1], env)->integer;
+  std::string data = c_api_process_cell(cells[2], env)->as_string();
+  int flags = c_api_process_cell(cells[3], env)->integer;
 
   int sent = send(fd, data.data(), data.size(), flags);
 
@@ -175,8 +175,8 @@ sauros::cell_ptr _pkg_net_send_(sauros::cells_t &cells,
 sauros::cell_ptr
 _pkg_net_shutdown_(sauros::cells_t &cells,
                    std::shared_ptr<sauros::environment_c> env) {
-  int fd = c_api_process_cell(cells[1], env)->get_integer();
-  int how = c_api_process_cell(cells[2], env)->get_integer();
+  int fd = c_api_process_cell(cells[1], env)->integer;
+  int how = c_api_process_cell(cells[2], env)->integer;
 
   return std::make_shared<sauros::cell_c>(
       sauros::cell_type_e::INTEGER, (sauros::cell_int_t)shutdown(fd, how));
